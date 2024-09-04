@@ -26,7 +26,14 @@ void Function_node::printFunctionNode(){
 
 //Expression Node
 Expression_node::Expression_node(Operator *op):op(op){}
-
+Expression_node::~Expression_node(){
+    if(op != nullptr){
+        std::cout<<"deleteing ";
+        op->printOp();
+        std::cout<<"\n";
+        delete op;
+    }
+}
 void Expression_node::printExpression_node() const{op->printOp();}
 
 //Statement Node
@@ -44,7 +51,7 @@ Operator::~Operator(){}
 Uni_Operator::~Uni_Operator(){
     delete exp->getOperand();
 }
-Uni_Operator::Uni_Operator(Tokentype op, Expression_node exp): op(op),exp(&exp){}
+Uni_Operator::Uni_Operator(Tokentype op, Expression_node *exp): op(op),exp(exp){}
 void Operator::printOp()const {
     std::cout<<"merow";
 }

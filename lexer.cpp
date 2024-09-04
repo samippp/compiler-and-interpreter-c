@@ -33,7 +33,7 @@ Token addToTokens(std::string curr, bool isNum){
 }
 
 TokenReverseStack splitString(std::ifstream &myFile){
-    TokenReverseStack tokens = TokenReverseStack();
+    TokenReverseStack tokens;
     std::string line;
     if(myFile.is_open()){
         char c;

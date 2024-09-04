@@ -6,29 +6,29 @@
 #include <string>
 
 
-Expression_node parse_expression(TokenReverseStack &tokens){
+Expression_node *parse_expression(TokenReverseStack &tokens){
     Token e = tokens.getfirst();
     if(e.type == 9){
-        return Expression_node(new constant(std::stoi(e.value)));
+        return new Expression_node(new constant(std::stoi(e.value)));
     }
     else if(e.type == 10){
         tokens.next();
-        return Expression_node(new Uni_Operator(Tokentype::Negation,parse_expression(tokens)));
+        return new Expression_node(new Uni_Operator(Tokentype::Negation,parse_expression(tokens)));
         std::cout<<"nega\n";
     }
     else if(e.type==11){
         tokens.next();
-        return Expression_node(new Uni_Operator(Tokentype::Bitwise_complement,parse_expression(tokens)));
+        return new Expression_node(new Uni_Operator(Tokentype::Bitwise_complement,parse_expression(tokens)));
     }
     else if(e.type==12){
         tokens.next();
-        return Expression_node(new Uni_Operator(Tokentype::Logical_negation,parse_expression(tokens)));
+        return new Expression_node(new Uni_Operator(Tokentype::Logical_negation,parse_expression(tokens)));
         std::cout<<"nega\n";
     }
     else{
-        return Expression_node(nullptr);
+        return new Expression_node(nullptr);
     }
-}
+}/*
 Statement_node parse_statement(TokenReverseStack &tokens){
     if(tokens.getfirst().type != 7)
         perror("Not Return Lla");
@@ -64,18 +64,16 @@ Function_node parse_function(TokenReverseStack& tokens){
     //if(tokens.isEmpty())
         
     
-}
+}*/
 int main(int argc, char **argv){
-    /*if(argc != 2)
-        perror("Incorrect Arguments");*/
         
     std::ifstream myFile("test.cpp");
     TokenReverseStack tokens = TokenReverseStack(splitString(myFile));
     myFile.close();
 
-    Expression_node e = parse_expression(tokens);
-    if(e.getOperand() != nullptr)
-        e.printExpression_node();
+    Expression_node *e = parse_expression(tokens);
+
+    e->printExpression_node();
     /*
     Program_node p = Program_node(tokens);
     std::vector<Function_node> fn = p.getFunctions();

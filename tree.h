@@ -39,7 +39,7 @@ class Expression_node{
     Operator *op;
     public:
         Expression_node(Operator *op);
-        
+        ~Expression_node();
         void printExpression_node() const;
         Operator *getOperand();
 };
@@ -57,7 +57,7 @@ class Uni_Operator : public Operator{
     Tokentype op;
     Expression_node *exp;
     public:
-        Uni_Operator(Tokentype op, Expression_node exp);
+        Uni_Operator(Tokentype op, Expression_node *exp);
         ~Uni_Operator() override;
         void printOp() const override;
         Tokentype getOp();

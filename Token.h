@@ -33,13 +33,6 @@ class TokenNode{
         Token getData();
 };
 
-class EmptyTokenStackException : public std::exception{
-    std::string message;
-    public:
-        EmptyTokenStackException(const std::string &msg);
-        const char* what() const throw();
-};
-
 class TokenReverseStack{
     TokenNode *first;
     TokenNode *tail;

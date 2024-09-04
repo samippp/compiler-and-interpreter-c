@@ -1,8 +1,7 @@
 #include "Token.h"
 #include <string>
 
-EmptyTokenStackException::EmptyTokenStackException(const std::string &msg) : message(msg) {}
-const char* EmptyTokenStackException::what() const throw(){return message.c_str();}
+
 TokenNode::TokenNode(Token data):data(data), next(nullptr){};
 Token TokenNode::getData(){return this->data;}
 TokenNode *TokenNode::getNext(){return this->next;}
@@ -20,16 +19,16 @@ TokenReverseStack::TokenReverseStack(TokenReverseStack &tokens){
 bool TokenReverseStack::isEmpty() {return (this->first == nullptr);}
 Token TokenReverseStack::getfirst(){
     if(this->isEmpty())
-        throw EmptyTokenStackException("List is empty.");
+        throw;
     return (*this->first).getData();
 }
 Token TokenReverseStack::peekNext(){
     if(this->isEmpty())
-        throw EmptyTokenStackException("List is empty.");
+        throw;
     if(this->first->getNext() != nullptr)
         return this->first->getNext()->getData();
     else
-        throw EmptyTokenStackException("List is empty.");
+        throw;
 }
 Token TokenReverseStack::getTail(){return (*this->tail).getData();}
 void TokenReverseStack::append(Token t){

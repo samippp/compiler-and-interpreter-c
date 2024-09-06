@@ -15,7 +15,10 @@ enum Tokentype{
     Integer_literal,//9
     Negation,//10
     Bitwise_complement,//11
-    Logical_negation//12
+    Logical_negation,//12
+    Addition,//13
+    Multiplication,//14
+    Division//15
 };
 
 struct Token{

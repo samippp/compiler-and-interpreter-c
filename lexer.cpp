@@ -28,6 +28,12 @@ Token addToTokens(std::string curr, bool isNum){
         return Token{curr,Tokentype::Bitwise_complement};
     else if(curr=="!")
         return Token{curr, Tokentype::Logical_negation};
+    else if(curr=="+")
+        return Token{curr,Tokentype::Addition};
+    else if(curr=="*")
+        return Token{curr,Tokentype::Multiplication};
+    else if(curr=="/")
+        return Token{curr,Tokentype::Division};
     else
         return Token({curr,Tokentype::Identitfier});
 }
@@ -46,7 +52,8 @@ TokenReverseStack splitString(std::ifstream &myFile){
                         isNum = false;
 
                 }
-                else if (c == '(' || c == ')' || c == '{' || c == '}' || c == ';' || c=='-'||c=='~'||c=='!'){
+                else if (c == '(' || c == ')' || c == '{' || c == '}' || c == ';' || c=='-'||c=='~'||
+                        c=='!'||c=='+'||c=='*'||c=='/'){
                     if(line.empty())
                         line.clear();
                     else{

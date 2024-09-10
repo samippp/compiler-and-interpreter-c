@@ -55,7 +55,7 @@ Expression_node::~Expression_node(){
     op = nullptr;
 }
 void Expression_node::printExpression_node() const{op->printOp();}
-void Expression_node::setExp(Operator *op){
+void Expression_node::setOp(Operator *op){
     this->op = op;
 }
 //Statement Node
@@ -75,7 +75,7 @@ void Statement_node::printStatement_node(){
 }
 
 //Operators
-Operator::~Operator(){}
+
 
 //Uni Operator
 Uni_Operator::~Uni_Operator(){
@@ -83,9 +83,7 @@ Uni_Operator::~Uni_Operator(){
     exp = nullptr;
 }
 Uni_Operator::Uni_Operator(Tokentype op, Expression_node *exp): op(op),exp(exp){}
-void Operator::printOp()const {
-    std::cout<<"merow";
-}
+Uni_Operator::Uni_Operator(Tokentype op):op(op),exp(nullptr){}
 void Uni_Operator::printOp() const{
     if(op == 10)
         std::cout<<"-";
@@ -94,11 +92,15 @@ void Uni_Operator::printOp() const{
     else if(op ==12)
         std::cout<<"!";
     
-    std::cout<<"\n|\n";
     exp->printExpression_node();
 }
+void Uni_Operator::setExp(Expression_node *exp){
+    this->exp = exp;
+}
 //Bin_operator 
-Bin_Operator::Bin_Operator(Expression_node *exp1, Expression_node *exp2):exp1(exp1),exp2(exp2){}
+Bin_Operator::Bin_Operator(Tokentype op):op(op),exp1(exp1),exp2(exp1){}
+Bin_Operator::Bin_Operator(Tokentype op, Expression_node *exp1):op(op),exp1(exp1),exp2(exp2){}
+Bin_Operator::Bin_Operator(Tokentype op, Expression_node *exp1, Expression_node *exp2):op(op),exp1(exp1),exp2(exp2){}
 Bin_Operator::~Bin_Operator(){
     delete exp1;
     exp1 = nullptr;
@@ -114,6 +116,7 @@ void Bin_Operator::printOp() const{
         std::cout<<"/";
     std::cout<<"\n|\n";
     exp1->printExpression_node();
+    std::cout<<" ";
     exp2->printExpression_node();
 }
 Tokentype Bin_Operator::getType() const{
@@ -125,7 +128,7 @@ std::pair<Expression_node*,Expression_node*> Bin_Operator::getPairExp() const{
 //constant
 constant::constant(int c):c(c){}
 constant::~constant(){}
-//getters
+//getters and setters
 std::vector<Function_node*> Program_node::getFunctions(){
     return functions;
 }
@@ -151,7 +154,7 @@ Tokentype constant::getType() const{
 Tokentype Uni_Operator::getType() const{
     return op;
 }
-std::string constant::getValue() const{
+std::string constant::getValue() const{  
     return std::to_string(c);
 }
 Expression_node *Uni_Operator::getExp() const{
@@ -160,4 +163,3 @@ Expression_node *Uni_Operator::getExp() const{
 Expression_node *constant::getExp() const{
     return nullptr;
 }
-

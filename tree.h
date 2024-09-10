@@ -41,7 +41,7 @@ class Expression_node{
         ~Expression_node();
         void printExpression_node() const;
         Operator *getOperand();
-        void setExp(Operator *op);
+        void setOp(Operator *op);
 };
 //Statement node
 class Statement_node{
@@ -56,8 +56,9 @@ class Statement_node{
 //Operators
 class Operator{
     public:
-        void virtual printOp()const;
-        virtual ~Operator();
+        void virtual printOp()const{}
+        virtual ~Operator(){}
+        void virtual setExp(Expression_node *exp){}
         Tokentype virtual getType() const{}
         std::string virtual getValue() const{}
         Expression_node virtual *getExp() const{}
@@ -68,10 +69,12 @@ class Uni_Operator : public Operator{
     Expression_node *exp;
     public:
         Uni_Operator(Tokentype op, Expression_node *exp);
+        Uni_Operator(Tokentype op);
         ~Uni_Operator() override;
         void printOp() const override;
         Tokentype getType() const override;
         Expression_node *getExp() const;
+        void setExp(Expression_node *exp) override;
         
 };
 class Bin_Operator : public Operator{
@@ -79,10 +82,14 @@ class Bin_Operator : public Operator{
     Expression_node *exp1;
     Expression_node *exp2;
     public:
-        Bin_Operator(Expression_node *exp1, Expression_node *exp2);
+        Bin_Operator(Tokentype op);
+        Bin_Operator(Tokentype op,Expression_node *exp1, Expression_node *exp2);
+        Bin_Operator(Tokentype op, Expression_node *exp1);
         ~Bin_Operator() override;
         void printOp() const override;
         Tokentype getType() const override;
+        void setExp1(Expression_node *exp1);
+        void setExp2(Expression_node *exp2);
         std::pair<Expression_node*,Expression_node*> virtual getPairExp() const override;
 };
 class constant : public Operator{

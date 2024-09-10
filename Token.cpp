@@ -22,13 +22,13 @@ Token TokenReverseStack::getfirst(){
         throw;
     return (*this->first).getData();
 }
-Token TokenReverseStack::peekNext(){
+TokenNode *TokenReverseStack::peekNext(){
     if(this->isEmpty())
-        throw;
+        return nullptr;
     if(this->first->getNext() != nullptr)
-        return this->first->getNext()->getData();
+        return this->first->getNext();
     else
-        throw;
+        return nullptr;
 }
 Token TokenReverseStack::getTail(){return (*this->tail).getData();}
 void TokenReverseStack::append(Token t){
@@ -45,7 +45,9 @@ void TokenReverseStack::append(Token t){
 void TokenReverseStack::next(){
     if(this->isEmpty())
         return;
-    TokenNode *temp = first;
-    first = (*first).getNext();
-    delete temp;
+    else{
+        TokenNode *temp = first;
+        first = (*first).getNext();
+        delete temp;
+    }
 }

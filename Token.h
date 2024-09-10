@@ -48,6 +48,6 @@ class TokenReverseStack{
         Token getfirst();
         Token getTail();
         void next();
-        Token peekNext();
+        TokenNode *peekNext();
 };
 #endif 

@@ -60,6 +60,7 @@ class Operator{
         virtual ~Operator(){}
         void virtual setExp(Expression_node *exp){}
         Tokentype virtual getType() const{}
+        bool virtual isBinOp() const{}
         std::string virtual getValue() const{}
         Expression_node virtual *getExp() const{}
         std::pair<Expression_node*,Expression_node*> virtual getPairExp() const{};
@@ -74,8 +75,20 @@ class Uni_Operator : public Operator{
         void printOp() const override;
         Tokentype getType() const override;
         Expression_node *getExp() const;
+        bool isBinOp() const override;
         void setExp(Expression_node *exp) override;
         
+};
+class Assign : public Operator{
+    std::string var_name;
+    Expression_node *exp;
+    public:
+        Assign(std::string var_name);
+        Assign(std::string var_name, Expression_node *exp);
+        Tokentype getType() const override;
+        void printOp() const override;
+        Expression_node *getExp() const override;
+        std::string getName();
 };
 class Bin_Operator : public Operator{
     Tokentype op;
@@ -88,6 +101,7 @@ class Bin_Operator : public Operator{
         ~Bin_Operator() override;
         void printOp() const override;
         Tokentype getType() const override;
+        bool isBinOp() const override;
         void setExp1(Expression_node *exp1);
         void setExp2(Expression_node *exp2);
         std::pair<Expression_node*,Expression_node*> virtual getPairExp() const override;
@@ -99,6 +113,7 @@ class constant : public Operator{
         ~constant() override;
         int getConst();
         void printOp() const override;
+        bool isBinOp() const override;
         Tokentype getType() const override;
         std::string getValue() const override;
         Expression_node *getExp() const override;

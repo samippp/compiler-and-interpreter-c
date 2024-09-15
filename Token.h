@@ -15,10 +15,20 @@ enum Tokentype{
     Integer_literal,//9
     Negation,//10
     Bitwise_complement,//11
-    Logical_negation,//12
+    Logical_negation,//12   
     Addition,//13
     Multiplication,//14
-    Division//15
+    Division,//15
+    AND,//16
+    OR,//17
+    Equal,//18
+    Not_Equal,//19
+    Less,//20
+    Less_equal,//21
+    Greater,//22
+    Greater_equal,//23
+    Modulo,//24
+    Assignment//25
 };
 
 struct Token{

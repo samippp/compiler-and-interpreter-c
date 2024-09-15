@@ -1,25 +1,18 @@
 	.text
-	.globl main
-main:
-	movl	$4, %eax
+	.globl _main
+_main:
+	movl	$24, %eax
+	
 
 	cmpl	$0, %eax
-	movl	$0, %eax
-	sete	%al
-
-	cmpl	$0, %eax
-	movl	$0, %eax
-	sete	%al
-
-	cmpl	$0, %eax
-	movl	$0, %eax
-	sete	%al
-
-	cmpl	$0, %eax
-	movl	$0, %eax
-	sete	%al
-
-	not	%eax
-
+	movq	$0, %rax
+	setne	%al
+	je	end0
+	movl	$1, %eax
+	
+cmpl	$0, %eax
+	setne	%al
+	
+end0:
+	
 	ret
-

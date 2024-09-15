@@ -47,7 +47,7 @@ Expression_node::Expression_node(Operator *op):op(op){}
 Expression_node::Expression_node():op(nullptr){}
 Expression_node::~Expression_node(){
     if(op != nullptr){
-        std::cout<<"deleteing ";
+        std::cout<<"deleteing\n";
         op->printOp();
         std::cout<<"\n";
         delete op;
@@ -83,6 +83,7 @@ Uni_Operator::~Uni_Operator(){
     exp = nullptr;
 }
 Uni_Operator::Uni_Operator(Tokentype op, Expression_node *exp): op(op),exp(exp){}
+bool Uni_Operator::isBinOp()const {return false;}
 Uni_Operator::Uni_Operator(Tokentype op):op(op),exp(nullptr){}
 void Uni_Operator::printOp() const{
     if(op == 10)
@@ -97,10 +98,16 @@ void Uni_Operator::printOp() const{
 void Uni_Operator::setExp(Expression_node *exp){
     this->exp = exp;
 }
+//Assignment operator
+Assign::Assign(std::string var_name):var_name(var_name){}
+Assign::Assign(std::string var_name,Expression_node *exp):var_name(var_name),exp(exp){}
+Tokentype Assign::getType() const{return Tokentype::Assignment;}
+
 //Bin_operator 
 Bin_Operator::Bin_Operator(Tokentype op):op(op),exp1(exp1),exp2(exp1){}
 Bin_Operator::Bin_Operator(Tokentype op, Expression_node *exp1):op(op),exp1(exp1),exp2(exp2){}
 Bin_Operator::Bin_Operator(Tokentype op, Expression_node *exp1, Expression_node *exp2):op(op),exp1(exp1),exp2(exp2){}
+bool Bin_Operator::isBinOp()const {return true;}
 Bin_Operator::~Bin_Operator(){
     delete exp1;
     exp1 = nullptr;
@@ -108,16 +115,37 @@ Bin_Operator::~Bin_Operator(){
     exp2 = nullptr;
 }
 void Bin_Operator::printOp() const{
+    if(op == 10)
+        std::cout<<"-";
     if(op == 13)
         std::cout<<"+";
     else if(op == 14)
         std::cout<<"*";
     else if(op ==15)
         std::cout<<"/";
+    else if(op == 16)
+        std::cout<<"&&";
+    else if(op == 17)
+        std::cout<<"||";
+    else if(op == 18)
+        std::cout<<"==";
+    else if(op == 19)   
+        std::cout<<"!=";
+    else if(op == 20)
+        std::cout<<"<";
+    else if(op == 21)
+        std::cout<<"<=";
+    else if(op == 22)
+        std::cout<<">";
+    else if(op == 23)
+        std::cout<<">=";
+    else if(op == 24)
+        std::cout<<"%";
     std::cout<<"\n|\n";
     exp1->printExpression_node();
     std::cout<<" ";
     exp2->printExpression_node();
+    std::cout<<"\n";
 }
 Tokentype Bin_Operator::getType() const{
     return op;
@@ -127,7 +155,8 @@ std::pair<Expression_node*,Expression_node*> Bin_Operator::getPairExp() const{
 }
 //constant
 constant::constant(int c):c(c){}
-constant::~constant(){}
+constant::~constant(){}\
+bool constant::isBinOp()const {return false;}
 //getters and setters
 std::vector<Function_node*> Program_node::getFunctions(){
     return functions;

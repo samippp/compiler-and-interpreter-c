@@ -1,36 +1,95 @@
-# Write a C Compiler!
+# C → x86-64 Compiler
 
-**This repo is no longer active. The latest version of this test suite, which accompanies the [Writing a C Compiler book](https://nostarch.com/writing-c-compiler), is available [here](https://github.com/nlsandler/writing-a-c-compiler-tests/).**
+A small compiler, written from scratch in C++, that translates a subset of C into x86-64 assembly (AT&T syntax). I built it to understand what happens between source code and the CPU: how text becomes tokens, how tokens become a tree, and how a tree becomes instructions.
 
-This is a set of C test programs to help you write your own compiler. They were written to accompany [this tutorial](https://norasandler.com/2017/11/29/Write-a-Compiler.html).
+No parser generators or compiler libraries. The lexer, parser, AST, and code generator are all hand-written.
 
-## Usage
+## Example
 
-### test all
-```
-./test_compiler.sh /path/to/your/compiler
-```
+Input (`test.c`):
 
-### test specific stages
-To test stage 1 and stage 3,
-```
-./test_compiler.sh /path/to/your/compiler 1 3
-```
-To test from stage 1 to stage 6,
-```
-./test_compiler.sh /path/to/your/compiler `seq 1 6`
+```c
+int main() {
+    return 2 * (3 + 4) - !0;
+}
 ```
 
-In order to use this script, your compiler needs to follow this spec:
+Output (x86-64 assembly):
 
-1. It can be invoked from the command line, taking only a C source file as an argument, e.g.: `./YOUR_COMPILER /path/to/program.c`
+```asm
+    .text
+    .globl _main
+_main:
+    movl    $2, %eax
+    pushq   %rax
+    movl    $3, %eax
+    pushq   %rax
+    movl    $4, %eax
+    popq    %rcx
+    addl    %ecx, %eax
+    popq    %rcx
+    imul    %ecx, %eax
+    pushq   %rax
+    movl    $0, %eax
+    cmpl    $0, %eax
+    movl    $0, %eax
+    sete    %al
+    popq    %rcx
+    subl    %ecx, %eax
+    ret
+```
 
-2. When passed `program.c`, it generates executable `program` in the same directory.
+> TODO: replace this with real output copied from your compiler.
 
-3. It doesn’t generate assembly or an executable if parsing fails (this is what the test script checks for invalid test programs).
+## How it works
 
-The script doesn’t check whether your compiler outputs sensible error messages, but you can use the invalid test programs to test that manually.
+```
+source.c ──► Lexer ──► tokens ──► Parser ──► AST ──► Code generator ──► assembly.s
+```
 
-## Contribute
+| Stage | File | What it does |
+|---|---|---|
+| Lexer | `lexer.cpp`, `Token.h` | Splits source into 25 token types: keywords, identifiers, literals, and single- and multi-character operators like `&&`, `<=`, `!=` |
+| Parser | `parser.cpp` | Recursive-descent parser with one function per precedence level, so `1 + 2 * 3` and `1 - 2 - 3` get the right precedence and left associativity |
+| AST | `tree.cpp`, `tree.h` | Program → Function → Statement → Expression nodes |
+| Code generation | `code_generation.cpp` | Walks the AST and emits stack-based x86-64: evaluate the left operand, push it, evaluate the right, pop, and combine |
 
-Additional test cases welcome! You can also file issues here, either about the test suite itself or about the content of the tutorial.
+### Supported language features
+
+- `int main()` with a `return` statement
+- Unary operators: `-`, `~`, `!`
+- Arithmetic: `+`, `-`, `*`, `/`, `%`
+- Relational: `==`, `!=`, `<`, `<=`, `>`, `>=`
+- Logical: `&&`, `||` with **short-circuit evaluation** (emitted as conditional jumps)
+- Parenthesized and nested expressions with correct precedence and associativity
+
+### Interesting details
+
+- **Division and modulo** use `cdq` to sign-extend `%eax` into `%edx:%eax` before `idivl`. The remainder for `%` comes from `%edx`.
+- **Comparisons** use `cmpl` followed by `setCC %al`, which turns CPU flags into a 0/1 value.
+- **Short-circuiting** `&&` and `||` jump past the right-hand operand once the result is known, so `0 && f()` never evaluates `f()`.
+
+## Build & run
+
+```bash
+# TODO: fill in the exact commands once there is a single entry point
+g++ -std=c++17 -o compiler lexer.cpp parser.cpp tree.cpp Token.cpp code_generation.cpp
+./compiler program.c        # writes program.s
+gcc program.s -o program    # assemble and link
+./program; echo $?          # the exit code is the return value
+```
+
+## Testing
+
+Tested against [Nora Sandler's "Write a C Compiler" test suite](https://github.com/nlsandler/write_a_c_compiler). Each stage has valid programs, which must compile and run correctly, and invalid ones, which must be rejected.
+
+```bash
+./test_compiler.sh ./compiler 1 2 3 4
+```
+
+## Roadmap
+
+- [ ] Local variables and assignment (stack frames with `%rbp` offsets)
+- [ ] `if` / `else` and the ternary operator
+- [ ] Loops: `for`, `while`, `do`, `break`, `continue`
+- [ ] Function calls following the System V calling convention, including recursion
